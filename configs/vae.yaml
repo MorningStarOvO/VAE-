@@ -1,12 +1,12 @@
 model_params:
-  name: 'VanillaVAE'
+  name: 'VanillaVAE' # VAE 模型的名字
   in_channels: 3
   latent_dim: 128
 
 exp_params:
   dataset: celeba
-  data_path: "../../shared/Data/"
-  img_size: 64
+  data_path: "data/celebA/" # 数据集的路径
+  img_size: 64 # 模型准备在这个 Size 下工作
   batch_size: 144 # Better to have a square number
   LR: 0.005
   weight_decay: 0.0
@@ -19,5 +19,5 @@ trainer_params:
 
 logging_params:
   save_dir: "logs/"
-  name: "VanillaVAE"
+  name: "VanillaVAE" # 实验名称
   manual_seed: 1265

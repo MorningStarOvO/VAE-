@@ -140,7 +140,7 @@ class VAEXperiment(pl.LightningModule):
             dataset = CelebA(root = self.params['data_path'],
                              split = "train",
                              transform=transform,
-                             download=False)
+                             download=True)
         else:
             raise ValueError('Undefined dataset type')
 

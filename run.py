@@ -1,6 +1,10 @@
+# -------------------- 导入必要的包 -------------------- #
 import yaml
 import argparse
 import numpy as np
+
+
+import time
 
 from models import *
 from experiment import VAEXperiment
@@ -8,6 +12,10 @@ import torch.backends.cudnn as cudnn
 from pytorch_lightning import Trainer
 from pytorch_lightning.logging import TestTubeLogger
 
+
+# ----- 开始计时 ----- #
+T_Start = time.time()
+print("程序开始运行 !")
 
 parser = argparse.ArgumentParser(description='Generic runner for VAE models')
 parser.add_argument('--config',  '-c',
@@ -53,3 +61,15 @@ runner = Trainer(default_save_path=f"{tt_logger.save_dir}",
 
 print(f"======= Training {config['model_params']['name']} =======")
 runner.fit(experiment)
+
+
+# ----- 结束计时 ----- #
+T_End = time.time()
+T_Sum = T_End  - T_Start
+T_Hour = int(T_Sum/3600)
+T_Minute = int((T_Sum%3600)/60)
+T_Second = round((T_Sum%3600)%60, 2)
+print("程序运行时间: {}时{}分{}秒".format(T_Hour, T_Minute, T_Second))
+
+
+print("程序已结束 ！")
