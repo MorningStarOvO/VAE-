@@ -1,3 +1,4 @@
+# ==================== 导入当前文件夹定义的包 ==================== #
 from .base import *
 from .vanilla_vae import *
 from .gamma_vae import *
@@ -22,13 +23,17 @@ from .vq_vae import *
 from .betatc_vae import *
 from .dip_vae import *
 
-
+# ----- 别名 ----- #
+# 加这个意义何在？？？
 # Aliases
 VAE = VanillaVAE
 GaussianVAE = VanillaVAE
 CVAE = ConditionalVAE
 GumbelVAE = CategoricalVAE
 
+
+# ----- 定义一个记录 VAE 模型的字典 ----- #
+# python 函数名作为字典值
 vae_models = {'HVAE':HVAE,
               'LVAE':LVAE,
               'IWAE':IWAE,

@@ -1,18 +1,24 @@
+# ==================== 导入必要的包 ==================== #
 import torch
 from models import BaseVAE
 from torch import nn
 from torch.nn import functional as F
+
+# ----- 导入自定义的包 ----- #
+# 导入了一些模型
 from .types_ import *
 
 
+# ==================== 定义模型类 ==================== #
 class VanillaVAE(BaseVAE):
 
-
+    # ---------- 初始化各种模块 ---------- #
     def __init__(self,
-                 in_channels: int,
-                 latent_dim: int,
-                 hidden_dims: List = None,
-                 **kwargs) -> None:
+                 in_channels: int,          # 输入的 channel 数
+                 latent_dim: int,           # latent code 的长度
+                 hidden_dims: List = None,  # 中间层网络的维度
+                 **kwargs) -> None:         # 其他参数
+        
         super(VanillaVAE, self).__init__()
 
         self.latent_dim = latent_dim
@@ -21,7 +27,7 @@ class VanillaVAE(BaseVAE):
         if hidden_dims is None:
             hidden_dims = [32, 64, 128, 256, 512]
 
-        # Build Encoder
+        # ----- Build Encoder ----- #
         for h_dim in hidden_dims:
             modules.append(
                 nn.Sequential(
@@ -33,11 +39,13 @@ class VanillaVAE(BaseVAE):
             in_channels = h_dim
 
         self.encoder = nn.Sequential(*modules)
+
+        # 计算 mu 和 var， 为何要 × 4
         self.fc_mu = nn.Linear(hidden_dims[-1]*4, latent_dim)
         self.fc_var = nn.Linear(hidden_dims[-1]*4, latent_dim)
 
 
-        # Build Decoder
+        # ----- Build Decoder ----- #
         modules = []
 
         self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
@@ -74,6 +82,7 @@ class VanillaVAE(BaseVAE):
                                       kernel_size= 3, padding= 1),
                             nn.Tanh())
 
+    # ---------- 编码器的实现 ---------- #
     def encode(self, input: Tensor) -> List[Tensor]:
         """
         Encodes the input by passing through the encoder network
@@ -91,6 +100,7 @@ class VanillaVAE(BaseVAE):
 
         return [mu, log_var]
 
+    # ---------- 解码器的实现 ---------- #
     def decode(self, z: Tensor) -> Tensor:
         """
         Maps the given latent codes
@@ -104,6 +114,7 @@ class VanillaVAE(BaseVAE):
         result = self.final_layer(result)
         return result
 
+    # ---------- reparameterize trick 的实现 ---------- #
     def reparameterize(self, mu: Tensor, logvar: Tensor) -> Tensor:
         """
         Reparameterization trick to sample from N(mu, var) from
@@ -116,11 +127,14 @@ class VanillaVAE(BaseVAE):
         eps = torch.randn_like(std)
         return eps * std + mu
 
+    # ---------- 整个网络构造的实现 ---------- #
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
         mu, log_var = self.encode(input)
         z = self.reparameterize(mu, log_var)
         return  [self.decode(z), input, mu, log_var]
 
+
+    # ---------- 损失函数 ---------- #
     def loss_function(self,
                       *args,
                       **kwargs) -> dict:
@@ -145,6 +159,7 @@ class VanillaVAE(BaseVAE):
         loss = recons_loss + kld_weight * kld_loss
         return {'loss': loss, 'Reconstruction_Loss':recons_loss, 'KLD':-kld_loss}
 
+    # ---------- 随机生成 latent code，然后生成样本 ---------- #
     def sample(self,
                num_samples:int,
                current_device: int, **kwargs) -> Tensor:
@@ -163,6 +178,7 @@ class VanillaVAE(BaseVAE):
         samples = self.decode(z)
         return samples
 
+    # ---------- generate 过程 ---------- #
     def generate(self, x: Tensor, **kwargs) -> Tensor:
         """
         Given an input image x, returns the reconstructed image

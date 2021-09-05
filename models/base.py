@@ -1,7 +1,9 @@
+# ==================== 导入必要的包 ==================== #
 from .types_ import *
 from torch import nn
 from abc import abstractmethod
 
+# ==================== 定义基准模型 ==================== #
 class BaseVAE(nn.Module):
     
     def __init__(self) -> None:

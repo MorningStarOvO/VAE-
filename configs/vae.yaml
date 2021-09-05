@@ -1,9 +1,9 @@
-model_params:
+model_params: # 模型参数
   name: 'VanillaVAE' # VAE 模型的名字
   in_channels: 3
   latent_dim: 128
 
-exp_params:
+exp_params: # 实验参数
   dataset: celeba
   data_path: "data/celebA/" # 数据集的路径
   img_size: 64 # 模型准备在这个 Size 下工作
@@ -12,12 +12,12 @@ exp_params:
   weight_decay: 0.0
   scheduler_gamma: 0.95
 
-trainer_params:
+trainer_params: # 训练参数
   gpus: 1
   max_nb_epochs: 50
   max_epochs: 30
 
-logging_params:
+logging_params: # log 参数
   save_dir: "logs/"
   name: "VanillaVAE" # 实验名称
   manual_seed: 1265

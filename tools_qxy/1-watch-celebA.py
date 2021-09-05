@@ -11,6 +11,7 @@
         step5: 观察 list_bbox_celeba.txt
         step6: 查看 bbox 所代表的信息
         step7: 观察 img_align_celeba_png 的图片及其相关信息
+        step8: 观察 img_align_celeba 的图片及相关信息
 """
 # -------------------- 导入必要的包 -------------------- #
 # ----- 系统操作相关 ----- #
@@ -30,8 +31,9 @@ from PIL import Image, ImageDraw, ImageFont
 # ----- 读取文件相关 ----- #
 PATH_ANN = "data/celebA/Anno"
 
-PATH_PIC_ALIGN = "data/celebA/Img/img_align_celeba_png"
-PATH_PIC = "data/celebA/Img/img_celeba"
+PATH_PIC_ALIGN = "data/celebA/celeba/img_align_celeba_png"
+PATH_PIC = "data/celebA/celeba/img_celeba"
+PATH_PIC_SMALL = "data/celebA/celeba/img_align_celeba"
 
 # ----- 保存文件相关 ----- #
 PATH_SAVE_BBOX = "output_qxy"
@@ -182,6 +184,14 @@ if __name__ == '__main__':
     img_align.save(os.path.join(PATH_SAVE_BBOX, "000001.png"))
     print("----------------------------------------")
     print("图片的尺寸为: ", img_align.size) # (178, 218)
+
+
+    # ---------- step8: 观察 img_align_celeba 的图片及相关信息 ---------- #
+    img_small = Image.open(os.path.join(PATH_PIC_SMALL, "000001.jpg"))
+    img_small.save(os.path.join(PATH_SAVE_BBOX, "000001_small.jpg"))
+    print("----------------------------------------")
+    print("图片的尺寸为: ", img_small.size) # (178, 218)
+
 
     # ----- 结束计时 ----- #
     T_End = time.time()
